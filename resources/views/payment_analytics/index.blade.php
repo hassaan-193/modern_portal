@@ -94,6 +94,16 @@
 
     </div>
 
+    {{-- Interactive Vue 3 Payment Analytics Chart Island --}}
+    <div class="row mt-3">
+        <div class="col-md-12">
+            <div id="payment-analytics-island"
+                 data-title="Disbursement & Spending Trends"
+                 data-currency="AED">
+            </div>
+        </div>
+    </div>
+
     {{-- ================================================================ --}}
     {{-- ROW 2: Monthly Execution + Aging                                  --}}
     {{-- ================================================================ --}}
@@ -417,50 +427,54 @@ $(function() {
 });
 
 // Trend Chart
-new Chart(document.getElementById('trendChart'), {
-    type: 'bar',
-    data: {
-        labels: {!! json_encode($trendLabels) !!},
-        datasets: [
-            {
-                label: 'Paid',
-                data: {!! json_encode($trendPaid) !!},
-                backgroundColor: 'rgba(40,167,69,0.75)',
-                borderRadius: 3,
-            },
-            {
-                label: 'Pending Due',
-                data: {!! json_encode($trendPending) !!},
-                backgroundColor: 'rgba(255,193,7,0.65)',
-                borderRadius: 3,
+if (document.getElementById('trendChart')) {
+    new Chart(document.getElementById('trendChart'), {
+        type: 'bar',
+        data: {
+            labels: {!! json_encode($trendLabels) !!},
+            datasets: [
+                {
+                    label: 'Paid',
+                    data: {!! json_encode($trendPaid) !!},
+                    backgroundColor: 'rgba(40,167,69,0.75)',
+                    borderRadius: 3,
+                },
+                {
+                    label: 'Pending Due',
+                    data: {!! json_encode($trendPending) !!},
+                    backgroundColor: 'rgba(255,193,7,0.65)',
+                    borderRadius: 3,
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { position: 'top' } },
+            scales: {
+                y: { beginAtZero: true, ticks: { callback: v => 'AED ' + v.toLocaleString() } }
             }
-        ]
-    },
-    options: {
-        responsive: true,
-        plugins: { legend: { position: 'top' } },
-        scales: {
-            y: { beginAtZero: true, ticks: { callback: v => 'AED ' + v.toLocaleString() } }
         }
-    }
-});
+    });
+}
 
 // Payment Method Donut
 @if($paymentMethods->count())
-new Chart(document.getElementById('methodChart'), {
-    type: 'doughnut',
-    data: {
-        labels: {!! json_encode($paymentMethods->pluck('method')) !!},
-        datasets: [{
-            data: {!! json_encode($paymentMethods->pluck('total')) !!},
-            backgroundColor: ['#28a745','#ffc107','#17a2b8','#dc3545','#6f42c1','#fd7e14'],
-        }]
-    },
-    options: {
-        responsive: true,
-        plugins: { legend: { position: 'bottom', labels: { boxWidth: 12 } } }
-    }
-});
+if (document.getElementById('methodChart')) {
+    new Chart(document.getElementById('methodChart'), {
+        type: 'doughnut',
+        data: {
+            labels: {!! json_encode($paymentMethods->pluck('method')) !!},
+            datasets: [{
+                data: {!! json_encode($paymentMethods->pluck('total')) !!},
+                backgroundColor: ['#28a745','#ffc107','#17a2b8','#dc3545','#6f42c1','#fd7e14'],
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { position: 'bottom', labels: { boxWidth: 12 } } }
+        }
+    });
+}
 @endif
 </script>
 @endsection

@@ -65,11 +65,26 @@
 </li>
 <li class="list-group-item">
     <b>Status</b>
-    <a class="float-right"><span class="badge badge-primary">{{ $po->status }}</span></a>
+    <div class="float-right d-flex align-items-center gap-2">
+        <span class="badge badge-primary mr-2">{{ $po->status }}</span>
+        <div id="po-approval-island"
+             data-po-id="{{ $po->id }}"
+             data-po-number="{{ $po->request_number ?? '' }}"
+             data-status="{{ $po->status }}">
+        </div>
+    </div>
 </li>
 <li class="list-group-item">
     <b>Items</b>
-    <div class="float">
+    <div class="mt-2">
+        <div id="po-items-island"
+             data-items="{{ json_encode(is_string($po->items) ? json_decode($po->items, true) : ($po->items ?? [])) }}"
+             data-is-lump-sum="{{ $po->isLumpSum() ? 'true' : 'false' }}"
+             data-show-item-code="{{ $po->hasItemCode() ? 'true' : 'false' }}"
+             data-lump-sum-total="{{ $po->lpout_manual_total ?? 0 }}">
+        </div>
+    </div>
+    <div class="float d-none">
         @php
             // Lump-sum orders have no per-row cost, so those columns are dropped.
             $isLump = $po->isLumpSum();

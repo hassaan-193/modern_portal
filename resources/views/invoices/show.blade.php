@@ -58,6 +58,10 @@ else{
                     <div class="invoice p-3 mb-3">
                         <div class="row no-print">
                             <div class="col-12" style="position: absolute;width: 100%;right: 15px;">
+                                <div id="invoice-pdf-island"
+                                     data-invoice-id="{{ $invoice->id }}"
+                                     class="float-right m-1">
+                                </div>
                                 <button type="button" onclick="printWitFtsits()" class="btn btn-success float-right m-1"><i class="fas fa-print"></i> FTSITS Print</button>
                                 <button type="button" onclick="printWithExpert()" class="btn btn-warning float-right m-1"><i class="fas fa-print"></i> EXPERTS Print</button>
                                 <button type="button" onclick="printWithFts()" class="btn btn-danger float-right m-1"><i class="fas fa-print"></i> FTS Print</button>

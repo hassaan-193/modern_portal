@@ -36,5 +36,12 @@
                 </div>
             </div>
         </div>
+
+        {{-- Vue 3 Quotation Comparison Island --}}
+        <div class="row mt-3">
+            <div class="col-md-12">
+                <div id="quotation-compare-island"></div>
+            </div>
+        </div>
     </div>
 @endsection

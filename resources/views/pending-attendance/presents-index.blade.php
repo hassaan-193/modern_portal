@@ -27,6 +27,9 @@
          <?php
         // @include('pending-attendance.presents_filters')
         ?>
+        {{-- Vue 3 Interactive Attendance Matrix Island --}}
+        <div id="attendance-grid-island" class="mb-3"></div>
+
         <!-- Report Generation Card -->
         <div class="card card-success mb-3">
             <div class="card-header" style="background-color: #d81b60;">

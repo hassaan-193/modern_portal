@@ -12,7 +12,7 @@
     @yield('css')
 
     <link rel="shortcut icon" type="image/ico" href="{{ asset('dist/img/logo.png')}}">
-    <link rel="stylesheet" href="{{ asset('css/app.css')}}">
+    @vite(['resources/sass/app.scss', 'resources/js/app.js'])
     <link rel="stylesheet" href="{{ asset('css/style.css')}}">
     <style>
         body{font-family: 'Poppins', sans-serif;}

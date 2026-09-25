@@ -13,25 +13,30 @@
 
     <!-- Right navbar links -->
     <ul class="order-1 order-md-3 navbar-nav navbar-no-expand ml-auto">
-        <!-- Notification Menu -->
-        <li class="nav-item dropdown">
+        <!-- Notification Menu (Vue 3 Reactive Island) -->
+        <li class="nav-item dropdown"
+            id="notification-bell-island"
+            data-initial-count="{{ Auth::user() ? Auth::user()->unreadNotifications->count() : 0 }}"
+            data-initial-notifications="{{ json_encode(Auth::user() ? Auth::user()->unreadNotifications->map(function($n) { return ['id' => $n->id, 'title' => $n->data['title'] ?? '', 'action' => $n->data['action'] ?? '#', 'time' => $n->created_at->diffForHumans()]; }) : []) }}">
             <a class="nav-link" data-toggle="dropdown" href="#" aria-expanded="false">
               <i class="far fa-bell text-maroon" style="font-size:18px;"></i>
-              <span class="badge badge-danger navbar-badge" style="top:0px;">{{Auth::user()->unreadNotifications->count()}}</span>
+              <span class="badge badge-danger navbar-badge" style="top:0px;">{{ Auth::user() ? Auth::user()->unreadNotifications->count() : 0 }}</span>
             </a>
             <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" style="left: inherit; right: 0px;">
-              <span class="dropdown-item dropdown-header">{{ Auth::user()->unreadNotifications->count()}} Notifications</span>
+              <span class="dropdown-item dropdown-header">{{ Auth::user() ? Auth::user()->unreadNotifications->count() : 0 }} Notifications</span>
               <div class="dropdown-divider"></div>
-                @foreach(Auth::user()->unreadNotifications as $notification)
-                    <a href="#" data-href="{{ $notification->data["action"] }}" data-notif-id="{{$notification->id}}" class="dropdown-item">
-                        <i class="fas fa-file mr-2"></i> {!! $notification->data['title'] !!}
-                        <span class="float-right text-muted text-sm">{{ $notification->created_at->diffForHumans()}}</span>
-                    </a>
-                @endforeach
+                @if(Auth::user())
+                    @foreach(Auth::user()->unreadNotifications as $notification)
+                        <a href="#" data-href="{{ $notification->data["action"] }}" data-notif-id="{{$notification->id}}" class="dropdown-item">
+                            <i class="fas fa-file mr-2"></i> {!! $notification->data['title'] !!}
+                            <span class="float-right text-muted text-sm">{{ $notification->created_at->diffForHumans()}}</span>
+                        </a>
+                    @endforeach
+                @endif
               <div class="dropdown-divider"></div>
               <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
             </div>
-          </li>
+        </li>
         <!-- User Menu -->
         <li class="nav-item dropdown">
             <a class="nav-link" data-toggle="dropdown" href="#">

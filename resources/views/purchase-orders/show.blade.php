@@ -26,6 +26,11 @@
                         <h3 class="card-title">Purchase Order Details</h3>
                     </div>
                     <div class="card-body">
+                        <div id="po-timeline-island"
+                             data-status="{{ $po->status ?? 'Pending' }}"
+                             data-created-date="{{ isset($po->created_at) && $po->created_at ? $po->created_at->format('M d, Y') : '' }}"
+                             class="mb-3">
+                        </div>
                         <ul class="list-group list-group-unbordered mb-3">
                             @include('purchase-orders.show_fields')
                         </ul>
