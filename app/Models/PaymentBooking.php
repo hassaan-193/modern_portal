@@ -36,8 +36,6 @@ class PaymentBooking extends Model
 
     public $table = 'payment_bookings';
 
-    protected $dates = ['deleted_at', 'submitted_at', 'verified_at', 'approved_at', 'rejected_at'];
-
     public $fillable = [
         'reference_no',
         'booking_type',
@@ -79,6 +77,11 @@ class PaymentBooking extends Model
         'payment_date'        => 'date',
         'status'              => 'integer',
         'created_by'          => 'integer',
+        'deleted_at'          => 'datetime',
+        'submitted_at'        => 'datetime',
+        'verified_at'         => 'datetime',
+        'approved_at'         => 'datetime',
+        'rejected_at'         => 'datetime',
     ];
 
     /**

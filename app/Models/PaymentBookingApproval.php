@@ -38,9 +38,8 @@ class PaymentBookingApproval extends Model
         'user_id'            => 'integer',
         'decision'           => 'integer',
         'note'               => 'string',
+        'decided_at'         => 'datetime',
     ];
-
-    protected $dates = ['decided_at'];
 
     public static function levels()
     {

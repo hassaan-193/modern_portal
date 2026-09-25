@@ -43,9 +43,8 @@ class QrStaffAttendance extends Model
         'check_out_time' => 'datetime',
         'reviewed_at' => 'datetime',
         'finalized_at' => 'datetime',
+        'deleted_at' => 'datetime',
     ];
-
-    protected $dates = ['deleted_at'];
 
     const STATUS_CHECKED_IN = 'checked_in';
     const STATUS_CHECKED_OUT = 'checked_out';

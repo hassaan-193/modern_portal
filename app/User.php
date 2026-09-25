@@ -47,6 +47,7 @@ class User extends Authenticatable implements HasMedia
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'deleted_at' => 'datetime',
     ];
     /**
      * Validation rules
@@ -73,8 +74,6 @@ class User extends Authenticatable implements HasMedia
         'password' => 'sometimes|confirmed',
         'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
     ];
-
-    protected $dates = ['deleted_at'];
 
     protected static function boot()
 	{

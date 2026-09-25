@@ -41,9 +41,8 @@ class AttendanceSession extends Model
         'clock_out_latitude' => 'float',
         'clock_out_longitude' => 'float',
         'is_late' => 'boolean',
+        'deleted_at' => 'datetime',
     ];
-
-    protected $dates = ['deleted_at'];
 
     // ============================================
     // CONSTANTS

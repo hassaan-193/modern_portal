@@ -24,12 +24,11 @@ class DeviceToken extends Model
     ];
 
     protected $casts = [
-        'id'      => 'integer',
-        'user_id' => 'integer',
-        'token'   => 'string',
+        'id'           => 'integer',
+        'user_id'      => 'integer',
+        'token'        => 'string',
+        'last_used_at' => 'datetime',
     ];
-
-    protected $dates = ['last_used_at'];
 
     public function user()
     {
