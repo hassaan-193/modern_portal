@@ -166,7 +166,7 @@ return [
         /*
          * Package Service Providers...
          */
-        Collective\Html\HtmlServiceProvider::class,
+        LaravelLux\Html\HtmlServiceProvider::class,
         Laracasts\Flash\FlashServiceProvider::class,
         // \InfyOm\Generator\InfyOmGeneratorServiceProvider::class,
         // \InfyOm\CoreUITemplates\CoreUITemplatesServiceProvider::class,
@@ -235,8 +235,8 @@ return [
         'URL'          => Illuminate\Support\Facades\URL::class,
         'Validator'    => Illuminate\Support\Facades\Validator::class,
         'View'         => Illuminate\Support\Facades\View::class,
-        'Form'         => Collective\Html\FormFacade::class,
-        'Html'         => Collective\Html\HtmlFacade::class,
+        'Form'         => LaravelLux\Html\FormFacade::class,
+        'Html'         => LaravelLux\Html\HtmlFacade::class,
         'Flash'        => Laracasts\Flash\Flash::class,
         'DataTables'   => Yajra\DataTables\Facades\DataTables::class,
     ],

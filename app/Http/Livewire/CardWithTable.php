@@ -6,9 +6,9 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Builder;
 use Rappasoft\LaravelLivewireTables\Views\Link;
 use Rappasoft\LaravelLivewireTables\Views\Column;
-use Rappasoft\LaravelLivewireTables\TableComponent;
+use Rappasoft\LaravelLivewireTables\DataTableComponent;
 
-class CardWithTable extends TableComponent
+class CardWithTable extends DataTableComponent
 {
     public $tableClass = 'table table-sm';
     public $getProject;
