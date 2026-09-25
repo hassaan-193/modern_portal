@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <title>{{config('app.name')}}</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="token" content="{{ csrf_token() }}">
     <meta name="base-url" content="{{ url('/') }}">
     <!-- Google Font: Source Sans Pro -->
