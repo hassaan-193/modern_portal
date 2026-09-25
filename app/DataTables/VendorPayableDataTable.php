@@ -69,7 +69,7 @@ class VendorPayableDataTable extends DataTable
                     ['extend' => 'reload',  'className' => 'btn btn-default btn-sm no-corner', 'text' => '<i class="fa fa-refresh"></i> Reload'],
                     ['extend' => 'create',  'className' => 'btn btn-default btn-sm no-corner', 'text' => '<i class="fa fa-plus"></i> Add Payable'],
                 ],
-                'language' => ['url' => url('//cdn.datatables.net/plug-ins/1.10.12/i18n/English.json')],
+                'language' => ['url' => asset('plugins/datatables/English.json')],
             ]);
     }
 

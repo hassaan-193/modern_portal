@@ -109,7 +109,7 @@ class AccountReportDataTable extends DataTable
                     $( api.column( 3 ).footer() ).html(total.toFixed(2));
                 }",
                 'language' => [
-                    'url' => url('//cdn.datatables.net/plug-ins/1.10.12/i18n/English.json'),
+                    'url' => asset('plugins/datatables/English.json'),
                 ],
             ]);
     }

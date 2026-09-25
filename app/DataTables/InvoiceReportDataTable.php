@@ -150,7 +150,7 @@ class InvoiceReportDataTable extends DataTable
                     $( api.column( 14 ).footer() ).html(total_amount.toFixed(2));
                 }",
                 'language' => [
-                    'url' => url('//cdn.datatables.net/plug-ins/1.10.12/i18n/English.json'),
+                    'url' => asset('plugins/datatables/English.json'),
                 ],
             ]);
     }

@@ -52,7 +52,7 @@ class LetterDataTable extends DataTable
                     ['extend' => 'create', 'className' => 'btn btn-default btn-sm', 'text' => '<i class="fa fa-plus"></i> Create'],
                 ],
                 'language' => [
-                    'url' => url('//cdn.datatables.net/plug-ins/1.10.12/i18n/English.json'),
+                    'url' => asset('plugins/datatables/English.json'),
                 ],
             ]);
     }

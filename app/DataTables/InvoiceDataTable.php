@@ -120,7 +120,7 @@ class InvoiceDataTable extends DataTable
                     ],
                 ],
                 'language' => [
-                    'url' => url('//cdn.datatables.net/plug-ins/1.10.12/i18n/English.json'),
+                    'url' => asset('plugins/datatables/English.json'),
                 ],
             ]);
     }
