@@ -6,8 +6,8 @@ use Eloquent as Model;
 // use App\Traits\UploadFileInvoice;
 use App\Traits\DeleteRecord;
 use App\Traits\Models\InvoiceTrait;
-use Spatie\MediaLibrary\HasMedia\HasMedia;
-use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 use Carbon\Carbon;
 
 /**
@@ -29,7 +29,7 @@ use Carbon\Carbon;
  */
 class Invoice extends Model implements HasMedia
 {
-    use HasMediaTrait,InvoiceTrait;
+    use InteractsWithMedia,InvoiceTrait;
     // use CacheQueryBuilder;
     use DeleteRecord;
 

@@ -5,12 +5,12 @@ namespace App\Models;
 use Eloquent as Model;
 use App\Traits\UploadFile;
 use App\Traits\DeleteRecord;
-use Spatie\MediaLibrary\HasMedia\HasMedia;
-use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
 class Letter extends Model implements HasMedia
 {
-    use HasMediaTrait;
+    use InteractsWithMedia;
     use UploadFile;
     use DeleteRecord;
 

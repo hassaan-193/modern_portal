@@ -4,8 +4,8 @@ namespace App\Models;
 
 use App\Traits\UploadFile;
 use App\Traits\DeleteRecord;
-use Spatie\MediaLibrary\HasMedia\HasMedia;
-use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -34,7 +34,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class Company extends Authenticatable implements HasMedia
 {
     //Use File Upload Traits
-    use HasMediaTrait;
+    use InteractsWithMedia;
     use UploadFile;
     use DeleteRecord;
 

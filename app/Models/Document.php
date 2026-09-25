@@ -4,14 +4,14 @@ namespace App\Models;
 
 use Eloquent as Model;
 use App\Traits\DeleteRecord;
-use Spatie\MediaLibrary\HasMedia\HasMedia;
-use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
 
 class Document extends Model implements HasMedia
 {
     //Use File Upload Traits
-    use HasMediaTrait;
+    use InteractsWithMedia;
     use DeleteRecord;
 
     public $table = 'documents';

@@ -5,14 +5,14 @@ namespace App\Models;
 use Eloquent as Model;
 use App\Traits\UplodeFileStafProfile;
 use App\Traits\DeleteRecord;
-use Spatie\MediaLibrary\HasMedia\HasMedia;
-use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 use Carbon\Carbon;
 
 class StafProfile extends Model implements HasMedia
 {
    //Use File Upload Traits
-   use HasMediaTrait;
+   use InteractsWithMedia;
    use UplodeFileStafProfile;
    use DeleteRecord;
 

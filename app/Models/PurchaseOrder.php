@@ -5,12 +5,12 @@ namespace App\Models;
 use Eloquent as Model;
 use App\Traits\DeleteRecord;
 use App\Traits\UploadFile;
-use Spatie\MediaLibrary\HasMedia\HasMedia;
-use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
 class PurchaseOrder extends Model implements HasMedia
 {
-    use DeleteRecord, HasMediaTrait, UploadFile;
+    use DeleteRecord, InteractsWithMedia, UploadFile;
 
     public $table = 'purchase_orders';
 
