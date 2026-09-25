@@ -90,6 +90,9 @@
         ],
         "post-create-project-cmd": [
             "@php artisan key:generate --ansi"
+        ],
+        "serve": [
+            "@php artisan serve --no-reload --port=8001"
         ]
     }
 }
