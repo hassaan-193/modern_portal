@@ -99,7 +99,7 @@ class RequestFormDataTable extends DataTable
      *
      * @return string
      */
-    protected function filename()
+    protected function filename(): string
     {
         return 'request_forms_' . time();
     }

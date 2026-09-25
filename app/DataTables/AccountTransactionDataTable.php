@@ -154,7 +154,7 @@ class AccountTransactionDataTable extends DataTable
      *
      * @return string
      */
-    protected function filename()
+    protected function filename(): string
     {
         return 'accounts_' . time();
     }

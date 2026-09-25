@@ -72,7 +72,7 @@ class StaffRatingDataTable extends DataTable
         ];
     }
 
-    protected function filename()
+    protected function filename(): string
     {
         return 'staff_ratings_' . time();
     }

@@ -105,7 +105,7 @@ class ViewTicketDataTable extends DataTable
      *
      * @return string
      */
-    protected function filename()
+    protected function filename(): string
     {
         return 'Tickets_' . date('YmdHis');
     }

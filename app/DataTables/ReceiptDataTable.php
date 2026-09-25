@@ -127,7 +127,7 @@ class ReceiptDataTable extends DataTable
      *
      * @return string
      */
-    protected function filename()
+    protected function filename(): string
     {
         return 'receipts_' . time();
     }

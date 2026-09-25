@@ -105,7 +105,7 @@ class StafDateDataTable extends DataTable
      *
      * @return string
      */
-    protected function filename()
+    protected function filename(): string
     {
         return 'StafDate_' . date('YmdHis');
     }

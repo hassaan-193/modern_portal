@@ -124,7 +124,7 @@ class StaffPayrollDataTable extends DataTable
      *
      * @return string
      */
-    protected function filename()
+    protected function filename(): string
     {
         return 'staff_payrolls_' . time();
     }

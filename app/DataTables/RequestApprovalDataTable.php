@@ -117,7 +117,7 @@ class RequestApprovalDataTable extends DataTable
      *
      * @return string
      */
-    protected function filename()
+    protected function filename(): string
     {
         return 'request_approvals_' . time();
     }

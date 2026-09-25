@@ -102,7 +102,7 @@ class InquiryEngineerDataTable extends DataTable
         ];
     }
 
-    protected function filename()
+    protected function filename(): string
     {
         return 'engineer_site_visits_' . time();
     }

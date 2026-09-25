@@ -170,7 +170,7 @@ class PaymentBookingDataTable extends DataTable
      *
      * @return string
      */
-    protected function filename()
+    protected function filename(): string
     {
         return 'payment_bookings_' . time();
     }

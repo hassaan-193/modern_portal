@@ -92,7 +92,7 @@ class VisitScheduleHistoryDataTable extends DataTable
      *
      * @return string
      */
-    protected function filename()
+    protected function filename(): string
     {
         return 'VisitScheduleHistory_' . date('YmdHis');
     }

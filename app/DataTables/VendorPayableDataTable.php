@@ -86,7 +86,7 @@ class VendorPayableDataTable extends DataTable
         ];
     }
 
-    protected function filename()
+    protected function filename(): string
     {
         return 'vendor_payables_' . time();
     }

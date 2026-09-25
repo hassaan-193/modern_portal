@@ -136,7 +136,7 @@ class AccountReportDataTable extends DataTable
      *
      * @return string
      */
-    protected function filename()
+    protected function filename(): string
     {
         return 'account_' . time();
     }

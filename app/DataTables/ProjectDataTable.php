@@ -120,7 +120,7 @@ class ProjectDataTable extends DataTable
      *
      * @return string
      */
-    protected function filename()
+    protected function filename(): string
     {
         return 'projects_' . time();
     }

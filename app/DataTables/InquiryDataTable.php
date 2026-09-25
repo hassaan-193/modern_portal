@@ -114,7 +114,7 @@ class InquiryDataTable extends DataTable
         ];
     }
 
-    protected function filename()
+    protected function filename(): string
     {
         return 'inquiries_' . time();
     }

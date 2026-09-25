@@ -89,7 +89,7 @@ class EngineerDrawingDataTable extends DataTable
         ];
     }
 
-    protected function filename()
+    protected function filename(): string
     {
         return 'engineerDrawings_' . time();
     }

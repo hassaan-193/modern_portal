@@ -221,7 +221,7 @@ class VisitTrackingDataTable extends DataTable
      *
      * @return string
      */
-    protected function filename()
+    protected function filename(): string
     {
         return 'visit_tracking_' . time();
     }

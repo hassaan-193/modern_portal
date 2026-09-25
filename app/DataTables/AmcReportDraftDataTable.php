@@ -110,7 +110,7 @@ class AmcReportDraftDataTable extends DataTable
      *
      * @return string
      */
-    protected function filename()
+    protected function filename(): string
     {
         return 'amc_report_drafts_' . time();
     }

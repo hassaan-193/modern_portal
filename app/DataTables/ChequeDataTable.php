@@ -129,7 +129,7 @@ class ChequeDataTable extends DataTable
      *
      * @return string
      */
-    protected function filename()
+    protected function filename(): string
     {
         return 'cheques_' . time();
     }

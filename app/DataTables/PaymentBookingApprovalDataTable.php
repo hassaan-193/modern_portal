@@ -164,7 +164,7 @@ class PaymentBookingApprovalDataTable extends DataTable
      *
      * @return string
      */
-    protected function filename()
+    protected function filename(): string
     {
         return 'payment_booking_approvals_' . time();
     }

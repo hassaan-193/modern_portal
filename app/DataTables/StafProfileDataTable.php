@@ -97,7 +97,7 @@ class StafProfileDataTable extends DataTable
      *
      * @return string
      */
-    protected function filename()
+    protected function filename(): string
     {
         return 'stafprofile_' . time();
     }

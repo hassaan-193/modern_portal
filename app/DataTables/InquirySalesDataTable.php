@@ -119,7 +119,7 @@ class InquirySalesDataTable extends DataTable
         ];
     }
 
-    protected function filename()
+    protected function filename(): string
     {
         return 'sales_pipeline_' . time();
     }

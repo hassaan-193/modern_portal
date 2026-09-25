@@ -136,7 +136,7 @@ class AmcInvoiceDataTable extends DataTable
         ];
     }
 
-    protected function filename()
+    protected function filename(): string
     {
         return 'amc_invoices_' . time();
     }

@@ -135,7 +135,7 @@ class PettyCashRegisterDataTable extends DataTable
      *
      * @return string
      */
-    protected function filename()
+    protected function filename(): string
     {
         return 'petty_cash_register_' . time();
     }

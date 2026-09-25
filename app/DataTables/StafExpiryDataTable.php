@@ -105,7 +105,7 @@ class StafExpiryDataTable extends DataTable
         ];
     }
 
-    protected function filename()
+    protected function filename(): string
     {
         return 'staf_expiry_' . time();
     }

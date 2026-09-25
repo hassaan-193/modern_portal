@@ -108,7 +108,7 @@ class InquiryDepartmentDataTable extends DataTable
         ];
     }
 
-    protected function filename()
+    protected function filename(): string
     {
         return 'department_inquiries_' . time();
     }

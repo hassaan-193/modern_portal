@@ -102,7 +102,7 @@ class CompanyDataTable extends DataTable
      *
      * @return string
      */
-    protected function filename()
+    protected function filename(): string
     {
         return 'companies_' . time();
     }

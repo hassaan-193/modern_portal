@@ -119,7 +119,7 @@ class LpooutDataTable extends DataTable
      *
      * @return string
      */
-    protected function filename()
+    protected function filename(): string
     {
         return 'lpoouts_' . time();
     }

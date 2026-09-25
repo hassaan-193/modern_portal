@@ -111,7 +111,7 @@ class PaymentInvoiceDataTable extends DataTable
      *
      * @return string
      */
-    protected function filename()
+    protected function filename(): string
     {
         return 'payment_invoices_' . time();
     }

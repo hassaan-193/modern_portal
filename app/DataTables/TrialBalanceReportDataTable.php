@@ -153,7 +153,7 @@ class TrialBalanceReportDataTable extends DataTable
      *
      * @return string
      */
-    protected function filename()
+    protected function filename(): string
     {
         return 'trial_balance_' . time();
     }
