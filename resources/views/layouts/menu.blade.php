@@ -48,6 +48,8 @@
 </li>
 @endif
 
+
+
 @canany(['companies', 'quotations', 'invoices', 'lpoins', 'projects', 'stafprofile', 'approve_staff_requests', 'approve_labor_requests'])
     <li class="nav-item dropdown">
         <a href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
@@ -706,3 +708,9 @@
     </li>
 @endcanany
 
+{{-- General Navigation Tab (Placed at the end of menu) --}}
+@auth
+<li class="nav-item">
+    <a href="{{ route('memos.index') }}" class="nav-link {{ Request::is('memos*') ? 'active' : '' }}">General</a>
+</li>
+@endauth

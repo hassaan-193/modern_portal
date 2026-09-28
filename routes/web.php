@@ -106,8 +106,11 @@ Route::prefix('company')->middleware('auth:company')->group(function() {
 Route::group(['middleware' => ['auth']], function() {
     Route::get('/', 'HomeController@index')->name('home');
 
-    // Notification
-    Route::post('notifications/NotifMarkAsRead', 'NotificationController@MarkAsRead')->name('notifications.MarkAsRead');
+    // Notification Routes
+    Route::get('notifications', [App\Http\Controllers\NotificationController::class, 'index'])->name('notifications.index');
+    Route::post('notifications/mark-all-read', [App\Http\Controllers\NotificationController::class, 'markAllAsRead'])->name('notifications.markAllRead');
+    Route::get('notifications/{id}/open', [App\Http\Controllers\NotificationController::class, 'open'])->name('notifications.open');
+    Route::post('notifications/NotifMarkAsRead', [App\Http\Controllers\NotificationController::class, 'MarkAsRead'])->name('notifications.MarkAsRead');
 
     // User And  Roles Routes...
     Route::resource('roles','RoleController')->middleware(['can:roles']);
@@ -543,6 +546,20 @@ Route::middleware('auth')->group(function () {
         // API Data Endpoints for AJAX filtering
         Route::get('/api/user-report-data/{userId}', [App\Http\Controllers\API\Attendance\QRAttendanceController::class, 'getUserReportData'])->name('api.user-report-data');
         Route::get('/api/all-users-report-data', [App\Http\Controllers\API\Attendance\QRAttendanceController::class, 'getAllUsersReportData'])->name('api.all-users-report-data');
+    });
+
+    // ============================================
+    // MEMOS & LETTERS MANAGEMENT ROUTES
+    // ============================================
+    Route::prefix('memos')->name('memos.')->group(function () {
+        Route::get('/', [App\Http\Controllers\MemoController::class, 'index'])->name('index');
+        Route::get('/create', [App\Http\Controllers\MemoController::class, 'create'])->name('create');
+        Route::post('/', [App\Http\Controllers\MemoController::class, 'store'])->name('store');
+        Route::get('/{id}', [App\Http\Controllers\MemoController::class, 'show'])->name('show');
+        Route::get('/{id}/file', [App\Http\Controllers\MemoController::class, 'file'])->name('file');
+        Route::post('/{id}/acknowledge', [App\Http\Controllers\MemoController::class, 'acknowledge'])->name('acknowledge');
+        Route::get('/{id}/download', [App\Http\Controllers\MemoController::class, 'download'])->name('download');
+        Route::get('/{id}/tracking', [App\Http\Controllers\MemoController::class, 'tracking'])->name('tracking');
     });
 });
 

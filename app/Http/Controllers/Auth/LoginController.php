@@ -28,10 +28,22 @@ class LoginController extends Controller
     }
 
     /**
-     * Redirect AMC Reporter users directly to the report form.
+     * Handle post-authentication redirects, prioritizing safe intended URLs (e.g. shared Memos).
      */
     protected function authenticated(Request $request, $user)
     {
+        // 1. Honor intended destination if present (e.g. clicking a shared memo link while logged out)
+        if ($request->session()->has('url.intended')) {
+            $intended = $request->session()->get('url.intended');
+            $parsedHost = parse_url($intended, PHP_URL_HOST);
+
+            // Anti-open-redirect security: only allow relative URLs or current host
+            if ($parsedHost === null || $parsedHost === $request->getHost()) {
+                return redirect()->intended($this->redirectPath());
+            }
+        }
+
+        // 2. Role-specific default landings
         if ($user->hasRole('AMC Reporter') && !$user->can('projects')) {
             return redirect()->route('projects.showForm');
         }
