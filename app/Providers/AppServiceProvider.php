@@ -38,6 +38,10 @@ class AppServiceProvider extends ServiceProvider
         Schema::defaultStringLength(191);
         \Illuminate\Pagination\Paginator::useBootstrapFour();
 
+        if (config('app.env') === 'production' || str_starts_with((string) config('app.url'), 'https://')) {
+            \Illuminate\Support\Facades\URL::forceScheme('https');
+        }
+
         if (class_exists(\Illuminate\Foundation\Console\ServeCommand::class)) {
             \Illuminate\Foundation\Console\ServeCommand::$passthroughVariables = array_merge(
                 \Illuminate\Foundation\Console\ServeCommand::$passthroughVariables,
