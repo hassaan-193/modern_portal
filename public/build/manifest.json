@@ -72,12 +72,12 @@
     "src": "public/plugins/summernote/font/summernote.woff"
   },
   "resources/js/app.js": {
-    "file": "assets/app-BsBnn1MH.js",
+    "file": "assets/app-BClX5U1J.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
     "css": [
-      "assets/app-CZtiGBxH.css"
+      "assets/app-DoAH-eiG.css"
     ]
   },
   "resources/sass/app.scss": {

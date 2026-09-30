@@ -622,6 +622,19 @@ class PurchaseOrderController extends AppBaseController
             'admin_notes' => $request->notes ?? null
         ], $id);
 
+        // Real-Time broadcast via Reverb WebSockets
+        try {
+            event(new \App\Events\PurchaseOrderStatusUpdated(
+                $po->id,
+                $po->po_number ?? $po->id,
+                'Admin Approved',
+                $po->total ?? 0,
+                auth()->user()->name ?? 'Admin'
+            ));
+        } catch (\Throwable $e) {
+            \Log::warning('Reverb PO broadcast error: ' . $e->getMessage());
+        }
+
         // Offload WhatsApp notification to background Redis queue
         try {
             \App\Jobs\SendWhatsAppJob::dispatch('po_approved', [
@@ -825,6 +838,19 @@ class PurchaseOrderController extends AppBaseController
             'admin_id' => auth()->id(),
             'admin_notes' => $request->notes
         ], $id);
+
+        // Real-Time broadcast via Reverb WebSockets
+        try {
+            event(new \App\Events\PurchaseOrderStatusUpdated(
+                $po->id,
+                $po->po_number ?? $po->id,
+                'Rejected',
+                $po->total ?? 0,
+                auth()->user()->name ?? 'Admin'
+            ));
+        } catch (\Throwable $e) {
+            \Log::warning('Reverb PO broadcast error: ' . $e->getMessage());
+        }
 
         // Offload WhatsApp notification to background Redis queue
         try {

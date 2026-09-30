@@ -306,6 +306,13 @@ class MemoController extends Controller
 
             DB::commit();
 
+            // Real-Time broadcast via Reverb WebSockets
+            try {
+                event(new \App\Events\MemoAcknowledged($memo->id, $memo->title, $user->id, $user->name));
+            } catch (\Throwable $re) {
+                \Log::warning('Reverb broadcast warning: ' . $re->getMessage());
+            }
+
             if ($request->wantsJson()) {
                 return response()->json([
                     'success' => true,

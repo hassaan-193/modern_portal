@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fts_modern_portal_app
+    restart: unless-stopped
+    ports:
+      - "8000:8000"   # Laravel Octane Web Server
+      - "8080:8080"   # Laravel Reverb WebSockets
+    environment:
+      APP_ENV: production
+      APP_DEBUG: 'false'
+      OCTANE_SERVER: frankenphp
+      BROADCAST_CONNECTION: reverb
+      QUEUE_CONNECTION: redis
+      CACHE_DRIVER: redis
+      SESSION_DRIVER: redis
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_DATABASE: fts_portal
+      DB_USERNAME: fts_user
+      DB_PASSWORD: fts_password
+    depends_on:
+      - redis
+      - mysql
+
+  redis:
+    image: redis:7.2-alpine
+    container_name: fts_modern_portal_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  mysql:
+    image: mysql:8.0
+    container_name: fts_modern_portal_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: fts_portal
+      MYSQL_USER: fts_user
+      MYSQL_PASSWORD: fts_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  redis_data:
+  mysql_data:

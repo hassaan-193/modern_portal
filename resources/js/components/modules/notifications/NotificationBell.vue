@@ -109,12 +109,31 @@ const closeDropdown = (e) => {
   }
 };
 
+const handleRealtimeEvent = (e, type) => {
+  const data = e.detail || {};
+  unreadCount.value++;
+  notificationsList.value.unshift({
+    id: 'rt-' + Date.now() + '-' + Math.random(),
+    title: data.message || `${type} notification received.`,
+    time: 'Just now',
+    action: data.po_id ? `/purchase-orders/${data.po_id}` : (data.memo_id ? `/memos/${data.memo_id}` : '#'),
+  });
+};
+
 onMounted(() => {
   document.addEventListener('click', closeDropdown);
+  window.addEventListener('fts:po-updated', (e) => handleRealtimeEvent(e, 'Purchase Order'));
+  window.addEventListener('fts:attendance-checkin', (e) => handleRealtimeEvent(e, 'Attendance'));
+  window.addEventListener('fts:payment-dispatched', (e) => handleRealtimeEvent(e, 'Payment'));
+  window.addEventListener('fts:memo-acknowledged', (e) => handleRealtimeEvent(e, 'Memo'));
 });
 
 onUnmounted(() => {
   document.removeEventListener('click', closeDropdown);
+  window.removeEventListener('fts:po-updated', (e) => handleRealtimeEvent(e, 'Purchase Order'));
+  window.removeEventListener('fts:attendance-checkin', (e) => handleRealtimeEvent(e, 'Attendance'));
+  window.removeEventListener('fts:payment-dispatched', (e) => handleRealtimeEvent(e, 'Payment'));
+  window.removeEventListener('fts:memo-acknowledged', (e) => handleRealtimeEvent(e, 'Memo'));
 });
 
 const handleNotificationClick = async (item) => {
