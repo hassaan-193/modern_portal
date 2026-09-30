@@ -54,6 +54,10 @@
         "optimize-autoloader": true,
         "preferred-install": "dist",
         "sort-packages": true,
+        "platform": {
+            "ext-pcntl": "8.2.0",
+            "ext-posix": "8.2.0"
+        },
         "policy": {
             "advisories": {
                 "block": false

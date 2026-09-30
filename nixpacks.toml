@@ -18,6 +18,8 @@ nixPkgs = [
     "php82Extensions.intl",
     "php82Extensions.bcmath",
     "php82Extensions.redis",
+    "php82Extensions.pcntl",
+    "php82Extensions.posix",
     "nodejs_20",
     "nodePackages.npm"
 ]
@@ -26,8 +28,8 @@ nixPkgs = [
 cmds = [
     "mkdir -p storage/framework/sessions storage/framework/views storage/framework/cache/data storage/logs bootstrap/cache",
     "chmod -R 777 storage bootstrap/cache || true",
-    "composer install --no-dev --optimize-autoloader --no-interaction",
-    "npm ci",
+    "composer install --no-dev --optimize-autoloader --no-interaction --ignore-platform-req=ext-pcntl --ignore-platform-req=ext-posix",
+    "npm ci || npm install",
     "npm run build"
 ]
 
