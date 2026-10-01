@@ -103,7 +103,7 @@ class LaborController extends Controller
                 LabourAssignment::create([
                     'labor_id' => $laborId,
                     'project_id' => $assignment['project_id'],
-                    'visit_schedule_id' => $assignment['visit_schedule_id'],
+                    'visit_schedule_id' => $assignment['visit_schedule_id'] ?? null,
                     'assignment_start_date' => $assignment['start_date'],
                     'assignment_end_date' => $assignment['end_date'],
                     'hours_worked' => $assignment['hours_worked'], // Added hours worked here
