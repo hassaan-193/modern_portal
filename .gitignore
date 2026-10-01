@@ -16,8 +16,8 @@
 Homestead.json
 Homestead.yaml
 npm-debug.log
-yarn-error.log
-/docs
+/docs/*
+!/docs/*.md
 /coverage-report
 *.docx
 # macOS system files

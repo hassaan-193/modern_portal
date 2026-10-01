@@ -39,6 +39,18 @@ class QuotationDataTable extends DataTable
         ->addColumn('approved_by', function($query) {
             return $query->approvedBy->name ?? '-';
         })
+        ->addColumn('quotation_company', function($query) {
+            if ($query->relationLoaded('quotation_company') && is_object($query->getRelation('quotation_company'))) {
+                $name = $query->getRelation('quotation_company')->name;
+                if (!empty($name)) return $name;
+            }
+            if (!empty($query->quotation_company)) {
+                $lookup = \App\Models\Lookup::find($query->quotation_company);
+                if ($lookup && !empty($lookup->name)) return $lookup->name;
+                return (string) $query->quotation_company;
+            }
+            return '-';
+        })
         ->rawColumns(['action','model','status_tag']);
     }
 
@@ -103,7 +115,7 @@ class QuotationDataTable extends DataTable
             'id' => new Column(['title' => __('models/quotations.fields.id'), 'data' => 'id']),
             'name' => new Column(['title' => __('models/quotations.fields.name'), 'data' => 'name']),
             'quotation_type_id' => new Column(['title' => __('models/quotations.fields.quotation_type_id'), 'data' => 'quotation_type.name']),
-            'quotation_company' => new Column(['title' => __('models/quotations.fields.quotation_company'), 'data' => 'quotation_company.name']),
+            'quotation_company' => new Column(['title' => __('models/quotations.fields.quotation_company'), 'data' => 'quotation_company']),
             'company_id' => new Column(['title' => __('models/companies.singular'), 'data' => 'model']),
             'ref_no' => new Column(['title' => __('models/quotations.fields.ref_no'), 'data' => 'ref_no','searchable' => true]),
             'subject' => new Column(['title' => __('models/quotations.fields.subject'), 'data' => 'subject','searchable' => true]),

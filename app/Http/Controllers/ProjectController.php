@@ -56,29 +56,30 @@ class ProjectController extends AppBaseController
     public function create()
     {
         $amcQuotations = \App\Models\Quotation::with('lpoins')
-        ->where('category', 'amc')
-        ->whereHas('lpoins')          
-        ->whereDoesntHave('project')  
-        ->get()
-        ->mapWithKeys(function ($q) {
-            $lpoinRef = $q->lpoins->ref_no;
-            $label = $lpoinRef . ' | ' . $q->ref_no . ' | ' . $q->subject;
-            return [$q->id => $label];
-        });
+            ->where('category', 'amc')
+            ->where('status', 1)
+            ->whereDoesntHave('project')  
+            ->get()
+            ->mapWithKeys(function ($q) {
+                $lpoinRef = optional($q->lpoins)->ref_no;
+                $label = ($lpoinRef ? $lpoinRef . ' | ' : '') . $q->ref_no . ' | ' . ($q->subject ?? 'No Subject');
+                return [$q->id => $label];
+            });
     
         $normalQuotations = \App\Models\Quotation::with('lpoins')
             ->where(function ($query) {
                 $query->where('category', 'normal')
                     ->orWhereNull('category');
             })
-            ->whereHas('lpoins')          
+            ->where('status', 1)
             ->whereDoesntHave('project')  
             ->get()
             ->mapWithKeys(function ($q) {
-                $lpoinRef = $q->lpoins->ref_no;
-                $label = $lpoinRef . ' | ' . $q->ref_no . ' | ' . $q->subject;
+                $lpoinRef = optional($q->lpoins)->ref_no;
+                $label = ($lpoinRef ? $lpoinRef . ' | ' : '') . $q->ref_no . ' | ' . ($q->subject ?? 'No Subject');
                 return [$q->id => $label];
             });
+            
         return view('projects.create', compact('amcQuotations', 'normalQuotations'));
     }
     
@@ -95,11 +96,23 @@ class ProjectController extends AppBaseController
         $input = $request->all();
         // If a quotation is provided, get the category and number_of_visits
         if (isset($input['quotation_id'])) {
-            $quotation = Quotation::find($input['quotation_id']);
+            $quotation = Quotation::with('lpoins')->find($input['quotation_id']);
             if ($quotation) {
                 // Assign quotation's category and number_of_visits to project
                 $input['category'] = $quotation->category ?? 'normal';
-                $input['visits'] = $quotation->number_of_visits ; 
+                $input['visits'] = $quotation->number_of_visits ?? 4;
+
+                // If quotation does not have an LPO-In yet, automatically create one so all downstream LPO reports, invoices, and relations link properly
+                if (!$quotation->lpoins) {
+                    \App\Models\Lpoin::create([
+                        'quotation_id' => $quotation->id,
+                        'ref_no' => 'LPO-' . ($quotation->ref_no ? str_replace('QUO-', '', $quotation->ref_no) : date('Y') . '-' . str_pad($quotation->id, 4, '0', STR_PAD_LEFT)),
+                        'date_issue' => $input['date'] ?? now()->toDateString(),
+                        'date_due' => now()->addYear()->toDateString(),
+                        'amount' => $quotation->amount ?? 0,
+                        'payment_terms' => 'Standard Terms',
+                    ]);
+                }
             }
         }
         if ($input['category'] === 'amc') {
@@ -521,5 +534,41 @@ public function visitTrackingExportExcel(Request $request)
     );
 }
 
+    /**
+     * Return live approved quotations via AJAX for dynamic dropdown updates.
+     */
+    public function getAvailableQuotations(\Illuminate\Http\Request $request)
+    {
+        $category = $request->get('category', 'amc');
+
+        $query = \App\Models\Quotation::with('lpoins')
+            ->where('status', 1)
+            ->whereDoesntHave('project');
+
+        if ($category === 'amc') {
+            $query->where('category', 'amc');
+        } else {
+            $query->where(function ($q) {
+                $q->where('category', 'normal')
+                    ->orWhereNull('category')
+                    ->orWhere('category', '')
+                    ->orWhere('category', '!=', 'amc');
+            });
+        }
+
+        $items = $query->get()->map(function ($q) {
+            $lpoinRef = optional($q->lpoins)->ref_no;
+            $label = ($lpoinRef ? $lpoinRef . ' | ' : '') . $q->ref_no . ' | ' . ($q->subject ?? 'No Subject');
+            return [
+                'id' => $q->id,
+                'category' => $q->category === 'amc' ? 'amc' : 'normal',
+                'label' => $label,
+                'subject' => $q->subject ?? '',
+            ];
+        });
+
+        return response()->json($items);
+    }
 
 }
+

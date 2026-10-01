@@ -176,6 +176,7 @@ Route::group(['middleware' => ['auth']], function() {
     });
     Route::get('projects/visit-tracking-export-excel', [App\Http\Controllers\ProjectController::class, 'visitTrackingExportExcel'])->name('projects.visit-tracking-export-excel');
     Route::get('/projects/visit-tracking-export', [App\Http\Controllers\ProjectController::class, 'visitTrackingExport'])->name('projects.visit-tracking-export');
+    Route::get('projects/get-available-quotations', [App\Http\Controllers\ProjectController::class, 'getAvailableQuotations'])->name('projects.get-available-quotations');
     Route::resource('projects', 'ProjectController');
     Route::group([ 'prefix' => 'projects'], function () {
         Route::get('/{id}/extensions', 'ProjectController@get_extensions')->name('projects.get_extensions');

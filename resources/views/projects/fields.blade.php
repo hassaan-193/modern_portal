@@ -62,25 +62,66 @@
     document.addEventListener('DOMContentLoaded', function () {
         const categoryRadios = document.querySelectorAll('input[name="category"]');
         const quotationSelect = document.getElementById('quotation_id');
-        const allOptions = Array.from(quotationSelect.options).filter(opt => opt.value !== "");
+        const subjectInput = document.querySelector('input[name="subject"]');
 
-        function filterQuotations(category) {
-            quotationSelect.innerHTML = '<option value="">-- Select --</option>';
-            allOptions.forEach(option => {
-                if (option.dataset.category === category) {
-                    quotationSelect.appendChild(option);
+        function fetchLiveQuotations(category, callback) {
+            if (!window.jQuery) return;
+            $.ajax({
+                url: "{{ route('projects.get-available-quotations') }}",
+                type: 'GET',
+                data: { category: category },
+                dataType: 'json',
+                success: function (data) {
+                    var currentVal = $(quotationSelect).val();
+                    quotationSelect.innerHTML = '<option value="">-- Select --</option>';
+                    data.forEach(function (item) {
+                        var opt = document.createElement('option');
+                        opt.value = item.id;
+                        opt.dataset.category = item.category;
+                        opt.dataset.subject = item.subject || '';
+                        opt.textContent = item.label;
+                        if (currentVal && String(currentVal) === String(item.id)) {
+                            opt.selected = true;
+                        }
+                        quotationSelect.appendChild(opt);
+                    });
+                    if ($(quotationSelect).data('select2')) {
+                        $(quotationSelect).trigger('change.select2');
+                    }
+                    if (callback) callback();
                 }
             });
         }
 
         categoryRadios.forEach(radio => {
             radio.addEventListener('change', function () {
-                filterQuotations(this.value);
+                fetchLiveQuotations(this.value);
             });
         });
 
-        // Initial filter on page load
-        filterQuotations(document.querySelector('input[name="category"]:checked').value);
+        // Auto-fill subject when a quotation is selected
+        quotationSelect.addEventListener('change', function () {
+            const selectedOpt = quotationSelect.options[quotationSelect.selectedIndex];
+            if (selectedOpt && selectedOpt.dataset && selectedOpt.dataset.subject) {
+                if (subjectInput && !subjectInput.value.trim()) {
+                    subjectInput.value = selectedOpt.dataset.subject;
+                }
+            }
+        });
+
+        // Auto-refresh quotations whenever the browser tab gains focus or on interval
+        window.addEventListener('focus', function () {
+            const checkedCategory = document.querySelector('input[name="category"]:checked')?.value || 'amc';
+            fetchLiveQuotations(checkedCategory);
+        });
+
+        setInterval(function () {
+            const checkedCategory = document.querySelector('input[name="category"]:checked')?.value || 'amc';
+            fetchLiveQuotations(checkedCategory);
+        }, 8000);
+
+        // Initial load on page ready
+        fetchLiveQuotations(document.querySelector('input[name="category"]:checked').value);
     });
 </script>
 @section('scripts')
@@ -89,7 +130,7 @@
     <script>
         $('#quotation_id').select2({
             theme: 'bootstrap4',
-            placeholder: "Select a Lpoin",
+            placeholder: "Select Quotation",
             allowClear: true
         })
     </script>

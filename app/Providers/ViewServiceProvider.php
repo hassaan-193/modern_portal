@@ -113,6 +113,16 @@ class ViewServiceProvider extends ServiceProvider
         });
         View::composer(['quotations.fields'], function ($view) {
             $typeCompany = Lookup::where('tag' , 'quotation_company')->pluck('name','id')->toArray();
+            if (empty($typeCompany)) {
+                $typeCompany = [
+                    'LLC' => 'LLC (Limited Liability Company)',
+                    'Sole Establishment' => 'Sole Establishment / Proprietorship',
+                    'PJSC' => 'Private Joint Stock Company (PJSC)',
+                    'Freezone' => 'Freezone Company (FZ-LLC)',
+                    'Branch' => 'Branch Office',
+                ];
+            }
+            $typeCompany = ['' => '-- Select Company Type --'] + $typeCompany;
             $view->with('typeCompany', $typeCompany);
         });
         View::composer(['quotations.fields'], function ($view) {

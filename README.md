@@ -128,8 +128,10 @@ OK (5 tests, 12 assertions)
 | :--- | :--- | :--- | :--- |
 | **Phase 1** | **Immediate Stabilization & Decoupling** | Redis background queues; offload WhatsApp/FCM/PDF; fix top N+1 queries; cache RBAC permissions. | **✅ POC Verified** |
 | **Phase 2** | **Core Platform & Runtime Modernization** | Stepwise framework upgrade (Laravel 7 ➔ 8 ➔ 9 ➔ 10 ➔ 11); PHP 8.3 JIT runtime; Spatie 3 ➔ 6; Medialibrary 7 ➔ 11. | ⏳ Next |
-| **Phase 3** | **Frontend Overhaul & Tooling** | Replace Mix with Vite 5; upgrade Vue 2 to Vue 3 (`@vue/compat`); upgrade Livewire 1 to Livewire 3; tree-shake 59 unminified plugins. | ⏳ Upcoming |
-| **Phase 4** | **Concurrency & Scale (Octane & Horizon)** | Laravel Octane with Swoole (1,000+ req/sec); Horizon queue supervision; native WebSockets (Soketi/Reverb). | ⏳ Upcoming |
+| **Phase 3** | **Frontend Overhaul & Tooling** | Replace Mix with Vite 5; upgrade Vue 2 to Vue 3 (`@vue/compat`); upgrade Livewire 1 to Livewire 3; tree-shake 59 unminified plugins. | **✅ Documented & Implemented** |
+| **Phase 4** | **Concurrency & Scale (Octane & Horizon)** | Laravel Octane with Swoole/FrankenPHP (1,000+ req/sec); Horizon queue supervision; native WebSockets (Reverb). | **✅ Documented & Implemented** |
+
+> 📖 **Deep-Dive Technical Specification**: See [PHASE_3_AND_PHASE_4_DEEP_DIVE.md](docs/PHASE_3_AND_PHASE_4_DEEP_DIVE.md) for full architecture blueprints, configuration schemas, Gotchas & memory leak prevention rules, and reproducible benchmarks.
 
 ---
 

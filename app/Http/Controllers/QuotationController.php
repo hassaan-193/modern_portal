@@ -56,12 +56,24 @@ class QuotationController extends AppBaseController
     {
         $input = $request->all();
 
-        // Check if quotation_type_id exists and equals 6 (AMC)
-        if (isset($input['quotation_type_id']) && in_array((int)$input['quotation_type_id'], [6, 7, 16, 22])) {
-            $input['category'] = $request->input('category', 'amc');
-            $input['number_of_visits'] = $request->input('number_of_visits', 4);
+        // Detect if quotation is an AMC category dynamically
+        $type = isset($input['quotation_type_id']) ? \App\Models\Lookup::find($input['quotation_type_id']) : null;
+        $isAmc = false;
+        if ($type) {
+            $typeName = strtolower($type->name);
+            if (strpos($typeName, 'amc') !== false || strpos($typeName, 'maintenance') !== false || strpos($typeName, 'annual') !== false) {
+                $isAmc = true;
+            }
+        }
+        if ($request->input('category') === 'amc' || in_array((int)($input['quotation_type_id'] ?? 0), [6, 7, 8, 9, 16, 22])) {
+            $isAmc = true;
+        }
+
+        if ($isAmc) {
+            $input['category'] = 'amc';
+            $input['number_of_visits'] = $request->input('number_of_visits', 4) ?: 4;
         } else {
-            $input['category'] = null;
+            $input['category'] = $request->input('category') ?: 'normal';
             $input['number_of_visits'] = null;
         }
         $quotation = $this->quotationRepository->create($input);
@@ -135,12 +147,24 @@ class QuotationController extends AppBaseController
     
         $input = $request->all();
     
-        // Only set category and number_of_visits if it's an AMC type quotation
-        if (isset($input['quotation_type_id']) && in_array((int)$input['quotation_type_id'], [6, 7, 16, 22])) {
-            $input['category'] = $request->input('category', 'amc');
-            $input['number_of_visits'] = $request->input('number_of_visits', 4);
+        // Detect if quotation is an AMC category dynamically
+        $type = isset($input['quotation_type_id']) ? \App\Models\Lookup::find($input['quotation_type_id']) : null;
+        $isAmc = false;
+        if ($type) {
+            $typeName = strtolower($type->name);
+            if (strpos($typeName, 'amc') !== false || strpos($typeName, 'maintenance') !== false || strpos($typeName, 'annual') !== false) {
+                $isAmc = true;
+            }
+        }
+        if ($request->input('category') === 'amc' || in_array((int)($input['quotation_type_id'] ?? 0), [6, 7, 8, 9, 16, 22])) {
+            $isAmc = true;
+        }
+
+        if ($isAmc) {
+            $input['category'] = 'amc';
+            $input['number_of_visits'] = $request->input('number_of_visits', 4) ?: 4;
         } else {
-            $input['category'] = null;
+            $input['category'] = $request->input('category') ?: 'normal';
             $input['number_of_visits'] = null;
         }
     
@@ -187,16 +211,18 @@ class QuotationController extends AppBaseController
             Flash::error(__('messages.not_found', ['model' => __('models/quotations.singular')]));
             return redirect()->back();
         }
-        // ccheck if customerr dataa exists
-        if($quotation->status == 0){
+        // Check if customer data exists
+        if ($quotation->status == 0) {
             $quotation->load('company');
             $company = $quotation->company;
-            if(!$company->contact_person ||
-                !$company->billing_address ||
-                !$company->shipping_address
-            ){
-                Flash::error("Please fill company information before approving the quotation.");
+            if (!$company || !$company->contact_person || !$company->billing_address) {
+                Flash::error("Please fill company information (Contact Person and Billing Address) before approving the quotation.");
                 return redirect()->back();
+            }
+            if (empty($company->shipping_address)) {
+                $company->update([
+                    'shipping_address' => $company->billing_address ?: ($company->location ?: 'Dubai, UAE')
+                ]);
             }
         }
         $approving = ! $quotation->status;
