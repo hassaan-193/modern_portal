@@ -399,9 +399,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     <td class="text-left">${esc(item)}</td>
                     <td class="locked-cell"><input type="number" name="blocks[${blockCount}][${fTotal}]" value="${totalVal}" readonly style="width:60px;"></td>
                     ${defCol}
-                    <td class="locked-cell">
-                        <label><input type="radio" name="blocks[${blockCount}][${fUrgent}]" value="yes" ${urgentVal==='yes'?'checked':''}> Yes</label>
-                        <label><input type="radio" name="blocks[${blockCount}][${fUrgent}]" value="no" ${urgentVal!=='yes'?'checked':''}> No</label>
+                    <td>
+                        <label style="cursor: pointer; margin-right: 6px;"><input type="radio" name="blocks[${blockCount}][${fUrgent}]" value="yes" ${urgentVal==='yes'?'checked':''}> Yes</label>
+                        <label style="cursor: pointer;"><input type="radio" name="blocks[${blockCount}][${fUrgent}]" value="no" ${urgentVal!=='yes'?'checked':''}> No</label>
                     </td>
                     <td><input type="text" name="blocks[${blockCount}][${fRemarks}]" value="${remarksVal}" style="width:100%;"></td>
                     <td>
@@ -461,9 +461,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     <td class="text-left">${esc(slug.replace(/_/g, ' '))}</td>
                     <td class="locked-cell"><input type="number" name="blocks[${blockCount}][${fTotal}]" value="${totalVal}" readonly style="width:60px;"></td>
                     <td><input type="number" name="blocks[${blockCount}][${fDefect}]" value="${defVal}" style="width:60px;"></td>
-                    <td class="locked-cell">
-                        <label><input type="radio" name="blocks[${blockCount}][${fUrgent}]" value="yes" ${urgentVal==='yes'?'checked':''}> Yes</label>
-                        <label><input type="radio" name="blocks[${blockCount}][${fUrgent}]" value="no" ${urgentVal!=='yes'?'checked':''}> No</label>
+                    <td>
+                        <label style="cursor: pointer; margin-right: 6px;"><input type="radio" name="blocks[${blockCount}][${fUrgent}]" value="yes" ${urgentVal==='yes'?'checked':''}> Yes</label>
+                        <label style="cursor: pointer;"><input type="radio" name="blocks[${blockCount}][${fUrgent}]" value="no" ${urgentVal!=='yes'?'checked':''}> No</label>
                     </td>
                     <td><input type="text" name="blocks[${blockCount}][${fRemarks}]" value="${remarksVal}" style="width:100%;"></td>
                     <td>
@@ -561,7 +561,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <td><input type="text" name="${base}_name]" placeholder="New Item" style="width:100%;"></td>
                 <td class="locked-cell"><input type="number" name="${base}_total]" readonly style="width:60px;"></td>
                 ${defectiveCol}
-                <td class="locked-cell"><label><input type="radio" name="${base}_urgent]" value="yes"> Yes</label><label><input type="radio" name="${base}_urgent]" value="no" checked> No</label></td>
+                <td><label style="cursor: pointer; margin-right: 6px;"><input type="radio" name="${base}_urgent]" value="yes"> Yes</label><label style="cursor: pointer;"><input type="radio" name="${base}_urgent]" value="no" checked> No</label></td>
                 <td><input type="text" name="${base}_remarks]" placeholder="Remarks" style="width:100%;"></td>
                 <td><input type="file" name="${base}_attachment][]" accept="image/*,.pdf" multiple style="font-size:11px;"></td>
                 <td><button type="button" class="btn btn-sm btn-danger" onclick="this.closest('tr').remove();">Remove</button></td>
