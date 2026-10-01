@@ -45,7 +45,7 @@
                         @endif
                         </div>
                         <div class="col-md-2">
-                            <strong>Date:</strong><br>{{ $po->date->format('Y-m-d') ?? '-' }}
+                            <strong>Date:</strong><br>{{ optional($po->date)->format('Y-m-d') ?? '-' }}
                         </div>
                         <div class="col-md-2">
                             <strong>Status:</strong><br>
@@ -201,7 +201,7 @@
                                 </tr>
                                 <tr>
                                     <td><strong>Date:</strong></td>
-                                    <td>{{ $po->lpout_date->format('Y-m-d') ?? '-' }}</td>
+                                    <td>{{ optional($po->lpout_date)->format('Y-m-d') ?? '-' }}</td>
                                 </tr>
                                 <tr>
                                     <td><strong>Payment Type:</strong></td>
