@@ -115,7 +115,9 @@ class ProjectController extends AppBaseController
                 }
             }
         }
-        if ($input['category'] === 'amc') {
+        $isAmc = isset($input['category']) && strtolower((string)$input['category']) === 'amc';
+        if ($isAmc) {
+            $input['category'] = 'amc';
             $visits = $input['visits'] ?? 4; // Default to 4 if not provided
             $startDate = Carbon::parse($input['date']);
             $visitSchedule = [];
@@ -141,7 +143,7 @@ class ProjectController extends AppBaseController
         $currentDate = Carbon::now();
 
         // If the project category is 'amc', create individual visit schedule records in the visit_schedules table
-        if ($input['category'] === 'amc') {
+        if ($isAmc && !empty($visitSchedule)) {
             foreach ($visitSchedule as $date) {
                 $visitDate = Carbon::parse($date);
                 $status = $visitDate->isPast() ? 'pending' : ($visitDate->isFuture() ? 'upcoming' : 'pending');

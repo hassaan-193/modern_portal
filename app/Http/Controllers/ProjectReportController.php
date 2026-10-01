@@ -12,6 +12,7 @@ use App\DataTables\AmcReportDraftDataTable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
 
 class ProjectReportController extends Controller
 {
@@ -87,7 +88,7 @@ class ProjectReportController extends Controller
         $projects = Project::whereHas('quotation', function ($query) use ($request) {
             $query->where('company_id', $request->company_id);
         })
-        ->where('category', 'amc')
+        ->whereRaw('LOWER(category) = ?', ['amc'])
         ->get();
         if ($projects->isEmpty()) {
             return response()->json(['error' => 'No AMC projects found for this company'], 404);
@@ -98,6 +99,43 @@ class ProjectReportController extends Controller
     public function getVisitSchedules(Request $request)
     {
         $projectId = $request->input('project_id');
+        $project = Project::find($projectId);
+        if ($project && strtolower((string)$project->category) === 'amc') {
+            // Auto-heal/generate visit schedules if missing
+            if ($project->visitSchedules()->count() === 0) {
+                $visits = (int) ($project->visits ?: 4);
+                $startDate = Carbon::parse($project->date ?: now());
+                $visitSchedule = [];
+                $visitSchedule[] = $startDate->toDateString();
+                if ($visits > 1) {
+                    if ($visits <= 4) {
+                        for ($i = 1; $i < $visits; $i++) {
+                            $visitSchedule[] = $startDate->copy()->addMonths($i * 3)->toDateString();
+                        }
+                    } else {
+                        $intervalDays = 365 / $visits;
+                        for ($i = 1; $i < $visits; $i++) {
+                            $visitSchedule[] = $startDate->copy()->addDays($i * $intervalDays)->toDateString();
+                        }
+                    }
+                }
+                $project->update([
+                    'category' => 'amc',
+                    'visit_schedule' => json_encode($visitSchedule)
+                ]);
+                foreach ($visitSchedule as $date) {
+                    $visitDate = Carbon::parse($date);
+                    $status = $visitDate->isPast() ? 'pending' : ($visitDate->isFuture() ? 'upcoming' : 'pending');
+                    VisitSchedule::create([
+                        'project_id' => $project->id,
+                        'visit_date' => $date,
+                        'status' => $status,
+                        'file_uploaded' => false,
+                    ]);
+                }
+            }
+        }
+
         $visitSchedules = VisitSchedule::where('project_id', $projectId)
             ->whereIn('status', ['pending', 'upcoming'])
             ->get(['id', 'visit_date', 'status']);
