@@ -646,10 +646,19 @@ class ProjectReportController extends Controller
         $report = ProjectReport::where('status', '!=', ProjectReport::STATUS_DRAFT)->findOrFail($id);
         $report->status = $request->status;
         $report->save();
+
+        // If the report was approved and linked to a scheduled visit, automatically mark that visit as done
+        if ($report->status === 'approved' && $report->visit_schedule_id) {
+            $schedule = VisitSchedule::find($report->visit_schedule_id);
+            if ($schedule && $schedule->status !== 'done') {
+                $schedule->update(['status' => 'done']);
+            }
+        }
     
         Flash::success('Project Report status updated successfully.');
 
-        return redirect()->back();    }
+        return redirect()->back();
+    }
 
     public function viewReport($reportId)
     {
