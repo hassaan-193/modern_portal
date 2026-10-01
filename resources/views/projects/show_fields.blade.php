@@ -40,17 +40,18 @@
         }
         $vendorPoToBePaid = $vendorPoTotal - $vendorPoPaid;
 
-        $pettyCashTotal = $project->petty_cash->sum('total_amount');
-        $totalExpense = $vendorPoPaid + $project->labour_charges + $pettyCashTotal;
+        $pettyCashTotal = $project->petty_cash ? $project->petty_cash->sum('total_amount') : 0;
+        $totalExpense = $vendorPoPaid + ($project->labour_charges ?? 0) + $pettyCashTotal;
         $profit = $clearedInvoices->sum('amount') - $totalExpense;
 
         $amountReceive = 0.0;
         $serviceCharges = 0.0;
         foreach ($clearedInvoices as $invoice) {
-            $amountReceive += $invoice->invoice_product_details->sum('total_amount');
-            $serviceCharges += $invoice->invoice_service_details->sum('amount');
+            $amountReceive += $invoice->invoice_product_details ? $invoice->invoice_product_details->sum('total_amount') : 0;
+            $serviceCharges += $invoice->invoice_service_details ? $invoice->invoice_service_details->sum('amount') : 0;
         }
-        $remaining = $project->quotation->amount - $clearedInvoices->sum('amount');
+        $quotationAmount = $project->quotation ? ($project->quotation->amount ?? 0) : 0;
+        $remaining = $quotationAmount - $clearedInvoices->sum('amount');
     @endphp
     <div class="col-12 col-sm-6 col-md-3">
         <div class="info-box mb-3">
@@ -58,7 +59,7 @@
 
           <div class="info-box-content">
             <span class="info-box-text">Contract Value</span>
-            <span class="info-box-number">{{ $project->quotation->amount }}</span>
+            <span class="info-box-number">{{ $project->quotation ? ($project->quotation->amount ?? 0) : 0 }}</span>
           </div>
           <!-- /.info-box-content -->
         </div>
@@ -71,7 +72,7 @@
 
           <div class="info-box-content">
             <span class="info-box-text">Vat</span>
-            <span class="info-box-number">{{ $project->quotation->vat }}</span>
+            <span class="info-box-number">{{ $project->quotation ? ($project->quotation->vat ?? 0) : 0 }}</span>
           </div>
           <!-- /.info-box-content -->
         </div>

@@ -48,5 +48,9 @@ class AppServiceProvider extends ServiceProvider
                 ['SYSTEMDRIVE', 'WINDIR', 'COMSPEC', 'TEMP', 'TMP', 'USERPROFILE', 'LOCALAPPDATA', 'HOMEDRIVE', 'HOMEPATH', 'APPDATA']
             );
         }
+
+        if (class_exists(\Livewire\Livewire::class)) {
+            \Livewire\Livewire::component('card-with-table', \App\Http\Livewire\CardWithTable::class);
+        }
     }
 }

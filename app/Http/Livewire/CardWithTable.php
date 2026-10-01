@@ -2,393 +2,198 @@
 
 namespace App\Http\Livewire;
 
-use Illuminate\Support\Facades\DB;
-use Illuminate\Database\Eloquent\Builder;
-use Rappasoft\LaravelLivewireTables\Views\Link;
-use Rappasoft\LaravelLivewireTables\Views\Column;
-use Rappasoft\LaravelLivewireTables\DataTableComponent;
+use Livewire\Component;
+use Livewire\WithPagination;
 
-class CardWithTable extends DataTableComponent
+class CardWithTable extends Component
 {
-    public $tableClass = 'table table-sm';
-    public $getProject;
-    public $getType;
-    public $getQuery;
-    public $getColumns;
+    use WithPagination;
 
+    protected $paginationTheme = 'bootstrap';
+
+    public $project;
+    public $title;
+    public $search = '';
 
     public function mount($project, $title)
     {
-        $this->getProject = $project;
-        $this->getType =  $title;
-
-        // get columns for table
-        $this->getColumns =  $this->$title();
+        $this->project = $project;
+        $this->title = $title;
     }
 
-    public function hydrate()
+    public function updatingSearch()
     {
-        $type = $this->getType;
-        $this->getColumns =  $this->$type();
+        $this->resetPage();
     }
 
-    public function query() : Builder
+    public function render()
     {
-        return $this->getQuery['query'];
+        $records = $this->getRecords();
+
+        return view('livewire.card-with-table', [
+            'records' => $records,
+            'title' => $this->title,
+            'normalizedType' => $this->getNormalizedType(),
+        ]);
     }
 
-    public function columns() : array
+    public function getNormalizedType(): string
     {
-        return $this->getColumns;
+        return str_replace([' ', '-'], '_', (string) $this->title);
     }
 
-    public function Invoices(){
-        $project_id = $this->getProject;
+    public function getRecords()
+    {
+        try {
+            $type = $this->getNormalizedType();
+            if (method_exists($this, $type)) {
+                return $this->$type();
+            }
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning("CardWithTable error for {$this->title}: " . $e->getMessage());
+        }
 
-        $this->getQuery =  [
-            'query' => \App\Models\Invoice::whereHas('quotation.project',function($query) use ($project_id){
-                $query->where('projects.id',$project_id);
-            })
-        ];
-        return [
-            Column::make('Invoice','invoice_no')
-                ->searchable()
-                ->sortable(),
-            Column::make('Start Date','start_date'),
-            Column::make('End Date','end_date'),
-            Column::make('Total Amount','total_amount'),
-            Column::make('Action')
-                ->components([
-                    Link::make(false)
-                    ->icon('fa fa-eye')
-                    ->class('btn btn-ghost-primary')
-                    ->href(function($model) {
-                        return route('invoices.show', $model->id);
-                    })
-                ]),
-        ];
-    }
-    public function Lpoins(){
-        $project_id = $this->getProject;
-
-        $this->getQuery =  [
-            'query' => \App\Models\Lpoin::with('quotation')->whereHas('quotation.project',function($query) use ($project_id){
-                $query->where('projects.id',$project_id);
-            })
-        ];
-        return [
-            Column::make('Ref #','ref_no')
-                ->searchable()
-                ->sortable(),
-            Column::make('Date Issue','date_issue'),
-            Column::make('Date Due','date_due'),
-            Column::make('Amount','quotation.contract_value'),
-            Column::make('Action')
-                ->components([
-                    Link::make(false)
-                    ->icon('fa fa-eye')
-                    ->class('btn btn-ghost-primary')
-                    ->href(function($model) {
-                        return route('lpoins.show', $model->id);
-                    })
-                ]),
-        ];
-    }
-    public function Extensions(){
-        $this->getQuery =  [
-            'query' => \App\Models\ProjectExtension::with('quotation')->where('project_id', $this->getProject)
-        ];
-
-        return [
-            Column::make('Quotation','quotation_link')
-            ->html()
-            ->customAttribute(),
-            Column::make('Name','name')
-                ->searchable()
-                ->sortable(),
-            Column::make('Value')
-                ->searchable()
-                ->sortable(),
-            Column::make('Action')
-                ->components([
-                    Link::make(false)
-                    ->icon('fa fa-eye')
-                    ->class('btn btn-ghost-primary')
-                    ->href(function($model) {
-                        return route('projects.view_extensions', $model->id);
-                    })
-                ]),
-        ];
-    }
-    public function Receipts(){
-        $project_id = $this->getProject;
-
-        $this->getQuery =  [
-            'query' => \App\Models\Receipt::with(['transaction_payment_type'])->whereHas('project',function($query) use ($project_id){
-                $query->where('projects.id',$project_id);
-            })
-        ];
-        return [
-            Column::make('Date','date_time'),
-            Column::make('Type','transaction_payment_type.name')
-                ->searchable()
-                ->sortable(),
-            Column::make('Amount','total')
-                ->searchable(),
-            Column::make('Status')
-                ->view('projects.projects_partials.payment_status_tag'),
-            Column::make('Action')
-                ->components([
-                    Link::make(false)
-                    ->icon('fa fa-eye')
-                    ->class('btn btn-ghost-primary')
-                    ->href(function($model) {
-                        return route('receipts.show', $model->id);
-                    })
-                ]),
-        ];
-    }
-    public function Lpoouts(){
-        $project_id = $this->getProject;
-
-        $this->getQuery =  [
-            'query' => \App\Models\Lpoout::where('project_id',$project_id)->where('is_latest_revision', true)
-            // 'query' => \App\Models\ProjectLpoout::with('lpoout')->where('project_id',$project_id)
-        ];
-        return [
-            Column::make('Date','date'),
-            Column::make('Vendor','vendor_link')
-                ->html()
-                ->customAttribute(),
-            Column::make('Total Amount','total_amount'),
-            Column::make('Action')
-                ->components([
-                    Link::make(false)
-                    ->icon('fa fa-eye')
-                    ->class('btn btn-ghost-primary')
-                    ->href(function($model) {
-                        return route('lpoouts.show', $model->id);
-                    })
-                ]),
-        ];
-    }
-    public function Petty_Cashes(){
-        $project_id = $this->getProject;
-
-        $this->getQuery =  [
-            'query' => \App\Models\PettyCash::with('payment_type')->where('project_id',$project_id)
-        ];
-        return [
-            Column::make('Date','date_time'),
-            Column::make('Description','description'),
-            Column::make('Type','payment_type.name'),
-            Column::make('Total Amount','total_amount'),
-            Column::make('Action')
-                ->components([
-                    Link::make(false)
-                    ->icon('fa fa-eye')
-                    ->class('btn btn-ghost-primary')
-                    ->href(function($model) {
-                        return route('pettyCashes.show', $model->id);
-                    })
-                ]),
-        ];
-    }
-    public function Payments(){
-        $project_id = $this->getProject;
-
-        $this->getQuery =  [
-            'query' => \App\Models\Payment::with(['transaction_payment_type'])
-                ->where('transactionable_type', 'App\Models\PaymentInvoice')
-                ->whereHasMorph('transactionable', [\App\Models\PaymentInvoice::class], function ($query) use ($project_id) {
-                    $query->where('project_id', $project_id);
-                })
-        ];
-        return [
-            Column::make('Date','date_time'),
-            Column::make('Type','transaction_payment_type.name')
-                ->searchable()
-                ->sortable(),
-            Column::make('Amount','total')
-                ->searchable(),
-            Column::make('Status')
-                ->view('projects.projects_partials.payment_status_tag'),
-            Column::make('Action')
-                ->components([
-                    Link::make(false)
-                    ->icon('fa fa-eye')
-                    ->class('btn btn-ghost-primary')
-                    ->href(function($model) {
-                        return route('payments.show', $model->id);
-                    })
-                ]),
-        ];
-    }
-    public function Extension_Invoices(){
-        $project_id = $this->getProject;
-
-        $this->getQuery =  [
-            'query' => \App\Models\Invoice::whereHas('quotation.extension_project',function($query) use ($project_id){
-                $query->where('projects.id',$project_id);
-            })
-        ];
-        return [
-            Column::make('Invoice','invoice_no')
-                ->searchable()
-                ->sortable(),
-            Column::make('Start Date','start_date'),
-            Column::make('End Date','end_date'),
-            Column::make('Total Amount','total_amount'),
-            Column::make('Action')
-                ->components([
-                    Link::make(false)
-                    ->icon('fa fa-eye')
-                    ->class('btn btn-ghost-primary')
-                    ->href(function($model) {
-                        return route('invoices.show', $model->id);
-                    })
-                ]),
-        ];
-    }
-    public function Extension_Lpoins(){
-        $project_id = $this->getProject;
-
-        $this->getQuery =  [
-            'query' => \App\Models\Lpoin::whereHas('quotation.extension_project',function($query) use ($project_id){
-                $query->where('projects.id',$project_id);
-            })
-        ];
-        return [
-            Column::make('Ref #','ref_no')
-                ->searchable()
-                ->sortable(),
-            Column::make('Date Issue','date_issue'),
-            Column::make('Date Due','date_due'),
-            Column::make('Action')
-                ->components([
-                    Link::make(false)
-                    ->icon('fa fa-eye')
-                    ->class('btn btn-ghost-primary')
-                    ->href(function($model) {
-                        return route('lpoins.show', $model->id);
-                    })
-                ]),
-        ];
-    }
-    public function Extension_Receipts(){
-        $project_id = $this->getProject;
-
-        $this->getQuery =  [
-            'query' => \App\Models\Receipt::with(['transaction_payment_type'])->whereHas('extension_project',function($query) use ($project_id){
-                $query->where('projects.id',$project_id);
-            })
-        ];
-        return [
-            Column::make('Date','date_time'),
-            Column::make('Type','transaction_payment_type.name')
-                ->searchable()
-                ->sortable(),
-            Column::make('Amount','total')
-                ->searchable(),
-            Column::make('Action')
-                ->components([
-                    Link::make(false)
-                    ->icon('fa fa-eye')
-                    ->class('btn btn-ghost-primary')
-                    ->href(function($model) {
-                        return route('receipts.show', $model->id);
-                    })
-                ]),
-        ];
+        return new \Illuminate\Pagination\LengthAwarePaginator([], 0, 10);
     }
 
-    public function Payment_invoices(){
-        $vendor_id = $this->getProject;
-
-        $this->getQuery =  [
-            'query' => \App\Models\PaymentInvoice::where('vendor_id',$vendor_id)
-        ];
-        return [
-            Column::make('Invoice #','invoice_no')
-                ->searchable()
-                ->sortable(),
-            Column::make('Start Date','start_date'),
-            Column::make('End Date','end_date'),
-            Column::make('Amount','total_amount'),
-            Column::make('Action')
-                ->components([
-                    Link::make(false)
-                    ->icon('fa fa-eye')
-                    ->class('btn btn-ghost-primary')
-                    ->href(function($model) {
-                        return route('paymentInvoices.show', $model->id);
-                    })
-                ]),
-        ];
+    public function Invoices()
+    {
+        $query = \App\Models\Invoice::whereHas('quotation.project', function ($q) {
+            $q->where('projects.id', $this->project);
+        });
+        if ($this->search) {
+            $query->where('invoice_no', 'like', '%' . $this->search . '%');
+        }
+        return $query->latest('id')->paginate(10);
     }
 
-    public function Vendor_Payments(){
-        $vendor_id = $this->getProject;
-
-        $this->getQuery =  [
-            'query' => \App\Models\Payment::with(['transaction_payment_type', 'transactionable'])
-                ->where('transactionable_type', 'App\Models\PaymentInvoice')
-                ->whereHasMorph('transactionable', [\App\Models\PaymentInvoice::class], function ($query) use ($vendor_id) {
-                    $query->where('vendor_id', $vendor_id);
-                })
-        ];
-        return [
-            Column::make('Date','date_time'),
-            Column::make('Type','transaction_payment_type.name')
-                ->searchable()
-                ->sortable(),
-            Column::make('Amount','total')
-                ->searchable(),
-            Column::make('Action')
-                ->components([
-                    Link::make(false)
-                    ->icon('fa fa-eye')
-                    ->class('btn btn-ghost-primary')
-                    ->href(function($model) {
-                        return route('payments.show', $model->id);
-                    })
-                ]),
-        ];
+    public function Lpoins()
+    {
+        $query = \App\Models\Lpoin::with('quotation')->whereHas('quotation.project', function ($q) {
+            $q->where('projects.id', $this->project);
+        });
+        if ($this->search) {
+            $query->where('ref_no', 'like', '%' . $this->search . '%');
+        }
+        return $query->latest('id')->paginate(10);
     }
 
-    public function Vendor_Lpoouts(){
-        $vendor_id = $this->getProject; // in this context, getProject will actually hold vendor_id
+    public function Extensions()
+    {
+        $query = \App\Models\ProjectExtension::with('quotation')->where('project_id', $this->project);
+        if ($this->search) {
+            $query->where('name', 'like', '%' . $this->search . '%');
+        }
+        return $query->latest('id')->paginate(10);
+    }
 
-        $this->getQuery = [
-            'query' => \App\Models\Lpoout::with(['vendor', 'lpo_out_type'])
-                ->where('vendor_id', $vendor_id)
-        ];
+    public function Receipts()
+    {
+        $query = \App\Models\Receipt::with(['transaction_payment_type'])->whereHas('project', function ($q) {
+            $q->where('projects.id', $this->project);
+        });
+        if ($this->search) {
+            $query->where('total', 'like', '%' . $this->search . '%');
+        }
+        return $query->latest('id')->paginate(10);
+    }
 
-        return [
-            Column::make('Invoice No', 'lpo_invoice_no')
-                ->searchable()
-                ->sortable(),
-            Column::make('Date', 'date')
-                ->sortable(),
-            Column::make('Vendor', 'vendor_link')
-                ->html()
-                ->customAttribute(),
-            Column::make('LPO Type', 'lpo_out_type.name')
-                ->searchable()
-                ->sortable(),
-            Column::make('Total Amount', 'total_amount')
-                ->sortable(),
-            Column::make('Status', 'status')
-                ->sortable(),
-            Column::make('Action')
-                ->components([
-                    Link::make(false)
-                        ->icon('fa fa-eye')
-                        ->class('btn btn-ghost-primary')
-                        ->href(function ($model) {
-                            return route('lpoouts.show', $model->id);
-                        })
-                ]),
-        ];
+    public function Lpoouts()
+    {
+        $query = \App\Models\Lpoout::where('project_id', $this->project)->where('is_latest_revision', true);
+        if ($this->search) {
+            $query->where('total_amount', 'like', '%' . $this->search . '%');
+        }
+        return $query->latest('id')->paginate(10);
+    }
+
+    public function Petty_Cashes()
+    {
+        $query = \App\Models\PettyCash::with('payment_type')->where('project_id', $this->project);
+        if ($this->search) {
+            $query->where(function ($q) {
+                $q->where('description', 'like', '%' . $this->search . '%')
+                  ->orWhere('total_amount', 'like', '%' . $this->search . '%');
+            });
+        }
+        return $query->latest('id')->paginate(10);
+    }
+
+    public function Payments()
+    {
+        $query = \App\Models\Payment::with(['transaction_payment_type'])
+            ->where('transactionable_type', 'App\Models\PaymentInvoice')
+            ->whereHasMorph('transactionable', [\App\Models\PaymentInvoice::class], function ($q) {
+                $q->where('project_id', $this->project);
+            });
+        if ($this->search) {
+            $query->where('total', 'like', '%' . $this->search . '%');
+        }
+        return $query->latest('id')->paginate(10);
+    }
+
+    public function Extension_Invoices()
+    {
+        $query = \App\Models\Invoice::whereHas('quotation.extension_project', function ($q) {
+            $q->where('projects.id', $this->project);
+        });
+        if ($this->search) {
+            $query->where('invoice_no', 'like', '%' . $this->search . '%');
+        }
+        return $query->latest('id')->paginate(10);
+    }
+
+    public function Extension_Lpoins()
+    {
+        $query = \App\Models\Lpoin::whereHas('quotation.extension_project', function ($q) {
+            $q->where('projects.id', $this->project);
+        });
+        if ($this->search) {
+            $query->where('ref_no', 'like', '%' . $this->search . '%');
+        }
+        return $query->latest('id')->paginate(10);
+    }
+
+    public function Extension_Receipts()
+    {
+        $query = \App\Models\Receipt::with(['transaction_payment_type'])->whereHas('extension_project', function ($q) {
+            $q->where('projects.id', $this->project);
+        });
+        if ($this->search) {
+            $query->where('total', 'like', '%' . $this->search . '%');
+        }
+        return $query->latest('id')->paginate(10);
+    }
+
+    public function Payment_invoices()
+    {
+        $query = \App\Models\PaymentInvoice::where('vendor_id', $this->project);
+        if ($this->search) {
+            $query->where('invoice_no', 'like', '%' . $this->search . '%');
+        }
+        return $query->latest('id')->paginate(10);
+    }
+
+    public function Vendor_Payments()
+    {
+        $query = \App\Models\Payment::with(['transaction_payment_type', 'transactionable'])
+            ->where('transactionable_type', 'App\Models\PaymentInvoice')
+            ->whereHasMorph('transactionable', [\App\Models\PaymentInvoice::class], function ($q) {
+                $q->where('vendor_id', $this->project);
+            });
+        if ($this->search) {
+            $query->where('total', 'like', '%' . $this->search . '%');
+        }
+        return $query->latest('id')->paginate(10);
+    }
+
+    public function Vendor_Lpoouts()
+    {
+        $query = \App\Models\Lpoout::with(['vendor', 'lpo_out_type'])
+            ->where('vendor_id', $this->project);
+        if ($this->search) {
+            $query->where('lpo_invoice_no', 'like', '%' . $this->search . '%');
+        }
+        return $query->latest('id')->paginate(10);
     }
 }
