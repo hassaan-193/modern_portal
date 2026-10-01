@@ -475,7 +475,7 @@
 
                     <h5>Make Final Decision</h5>
 
-                    @if($po->status === 'Pending Admin Approval' || $po->status === 'Hold')
+                    @if($po->status === 'Pending Admin Approval' || $po->status === 'Hold' || $po->status === 'Approved')
                     <div class="row">
                         <div class="col-md-4">
                             <div class="bg-light p-3 rounded">
